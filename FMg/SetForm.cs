@@ -25,11 +25,11 @@ namespace FMg
         int LabelHeight = 20;
         ComboBox comboBoxFont;
         Form1 ParentForm;
-        ListView listView;
+        ListBox listView;
 
         User CurrentUser;
 
-        public SetForm(ListView listV, Form1 formMain, User currentUser) //Form1 formMain
+        public SetForm(ListBox listV, Form1 formMain, User currentUser) //Form1 formMain
         {
             InitializeComponent();
             CurrentUser = currentUser;
