@@ -121,12 +121,16 @@ namespace FMg
             CopyButton.Click += CopyButton_Click;
             Controls.Add(CopyButton);
             
+
+            /*
             InsertButton.Text = "I";
             SetButtonSize(InsertButton);
             InsertButton.BackColor = Color.PeachPuff;
             InsertButton.Location = new Point(837, 425);
             InsertButton.Click += InsertButton_Click;
             Controls.Add(InsertButton);
+            */ 
+
 
             DeleteButton.Text = "D";
             SetButtonSize(DeleteButton);
