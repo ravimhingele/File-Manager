@@ -20,18 +20,14 @@ namespace FMg
     public partial class Form1 : Form
     {
         Label label1 = new Label();
-        TreeView treeView1 = new TreeView();
+        
         ListView listView1 = new ListView();
-        Button CopyButton = new Button();
-        Button InsertButton = new Button();
-        Button DeleteButton = new Button();
-        Button RenameButton = new Button();
-        Button ArchiveButton = new Button();
+       
         Button ReturnButton = new Button();
-        Button SettingsButton = new Button();
-        Button NewFolderButton = new Button();
-        Button DeArchivateButton = new Button();
+        
         ImageList imageList = new ImageList();
+
+        ComboBox comboBox = new ComboBox();
 
         string path;
 
@@ -43,14 +39,13 @@ namespace FMg
 
         BinaryFormatter binFormatter;
         User CurrentUser;
-        LoginForm LoginForm;
 
         Font GlobalFont;
 
-        public Form1(LoginForm loginForm, User currentUser)
+        public Form1()
         {
-            CurrentUser = currentUser;
-            LoginForm = loginForm;
+            CurrentUser = new User();
+            
 
             InitializeComponent();
             FormClosed += Form1_FormClosed;
@@ -63,19 +58,14 @@ namespace FMg
 
 
 
-            //---TreeView---//
-            treeView1.Width = 300;
-            treeView1.Height = 460;
-            treeView1.Font = GlobalFont; // устанавливаем шрифт Arial размера 12
-            Controls.Add(treeView1);
+            
 
             //---TextBox---//
-            label1.Location = new Point(303, 2);
-            label1.Height = 30;
-            label1.Width = 640;
-            label1.Font = GlobalFont;
-            label1.BackColor = Color.Gray;
-            Controls.Add(label1);
+            comboBox.Location = new Point(303, 2);
+            comboBox.Height = 30;
+            comboBox.Width = 640;
+            comboBox.Font = GlobalFont;
+            Controls.Add(comboBox);
 
             //--ListView--//
             listView1.View = View.LargeIcon;
@@ -87,21 +77,20 @@ namespace FMg
             listView1.Height = 390; //433
             listView1.Width = 677;
             listView1.Font = GlobalFont;
-            listView1.BackColor = currentUser.BackgroundColor;
+            listView1.BackColor = CurrentUser.BackgroundColor;
             listView1.LargeImageList = imageList;
             Controls.Add(listView1);
 
 
             //---Размер окна---//
             SetSize(1000, 500);
-            this.Text = "Файловый менеджер"; // заголовок
-            CenterToScreen(); // центрируем форму
+            this.Text = "Файловый менеджер"; 
+            CenterToScreen(); 
 
-            PopulateTreeView(treeView1);
+            ShowFiles("C:\\");
 
 
-            //treeView1.AfterSelect += new TreeViewEventHandler(treeView1_AfterSelect);
-            treeView1.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(treeView1_NodeMouseDoubleClick);
+            
             listView1.ItemActivate += new EventHandler(listView1_ItemActivate);
 
 
@@ -114,69 +103,7 @@ namespace FMg
             Controls.Add(ReturnButton);
 
             
-            CopyButton.Text = "C";
-            SetButtonSize(CopyButton);
-            CopyButton.BackColor = Color.PeachPuff;
-            CopyButton.Location = new Point(800, 425);
-            CopyButton.Click += CopyButton_Click;
-            Controls.Add(CopyButton);
             
-
-            /*
-            InsertButton.Text = "I";
-            SetButtonSize(InsertButton);
-            InsertButton.BackColor = Color.PeachPuff;
-            InsertButton.Location = new Point(837, 425);
-            InsertButton.Click += InsertButton_Click;
-            Controls.Add(InsertButton);
-            */ 
-
-
-            DeleteButton.Text = "D";
-            SetButtonSize(DeleteButton);
-            DeleteButton.BackColor = Color.PeachPuff;
-            DeleteButton.Location = new Point(874, 425);
-            DeleteButton.Click += DeleteButton_Click;
-            Controls.Add(DeleteButton);
-
-
-            RenameButton.Text = "R";
-            SetButtonSize(RenameButton);
-            RenameButton.BackColor = Color.PeachPuff;
-            RenameButton.Location = new Point(911, 425);
-            RenameButton.Click += RenameButton_Click;
-            Controls.Add(RenameButton);
-
-
-            ArchiveButton.Text = "A";
-            SetButtonSize(ArchiveButton);
-            ArchiveButton.BackColor = Color.PeachPuff;
-            ArchiveButton.Location = new Point(948, 425);
-            ArchiveButton.Click += ArchiveButton_Click;
-            Controls.Add(ArchiveButton);
-
-
-            SettingsButton.Text = "S";
-            SetButtonSize(SettingsButton);
-            SettingsButton.BackColor = Color.Beige;
-            SettingsButton.Location = new Point(945, 0);
-            SettingsButton.Click += SettingsButton_Click;
-            Controls.Add(SettingsButton);
-
-
-            NewFolderButton.Text = "N";
-            SetButtonSize(NewFolderButton);
-            NewFolderButton.BackColor = Color.PeachPuff;
-            NewFolderButton.Location = new Point(726, 425);
-            NewFolderButton.Click += NewFolderButton_Click;
-            Controls.Add(NewFolderButton);
-
-            DeArchivateButton.Text = "Z";
-            SetButtonSize(DeArchivateButton);
-            DeArchivateButton.BackColor = Color.PeachPuff;
-            DeArchivateButton.Location = new Point(689, 425);
-            DeArchivateButton.Click += DeArchivateButton_Click;
-            Controls.Add(DeArchivateButton);
         }
 
         
@@ -185,7 +112,7 @@ namespace FMg
         {
             GlobalFont = new Font(fontFamily, fontSize);
             label1.Font = GlobalFont;
-            treeView1.Font = GlobalFont;
+            comboBox.Font = GlobalFont;
             listView1.Font = GlobalFont;
             listView1.BackColor = backColor;
         }
@@ -215,26 +142,7 @@ namespace FMg
             }
         }
 
-        private void PopulateTreeView(TreeView tree)
-        {
-
-            DriveInfo[] drives = DriveInfo.GetDrives();
-            foreach (DriveInfo drive in drives)
-            {
-                if (drive.IsReady)
-                {
-                    DirectoryInfo info1 = new DirectoryInfo(drive.RootDirectory.FullName);
-                    if (info1.Exists)
-                    {
-                        TreeNode rootNode = new TreeNode(info1.Name);
-                        rootNode.Tag = info1;
-                        treeView1.Nodes.Add(rootNode);
-                        
-                        AddDirectoriesAndFiles(rootNode, info1);
-                    }
-                }
-            }
-        }
+        
 
         private void GetDirectories(DirectoryInfo[] subDirs, TreeNode nodeToAddTo)
         {
@@ -259,83 +167,7 @@ namespace FMg
         }
 
         
-        private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            /*
-            if (e.Node != null)
-            {
-                string p = "";
-
-                if (e.Node.Tag != null)
-                {
-                    string tag = e.Node.Tag.ToString();
-                    if (File.Exists(tag))
-                    {
-                        p = Path.GetDirectoryName(tag);
-                    }
-                    else if (Directory.Exists(tag))
-                    {
-                        p = Path.GetDirectoryName(tag);
-                        //path = tag;
-                    }
-                    else
-                    {
-                        p = "Указанный путь не существует";
-                    }
-                }
-                label1.Text = p; //p - path
-            }
-            */
-
-            // Получаем выбранный узел
-            TreeNode selectedNode = e.Node;
-
-            // Определяем тип элемента (файл или папка)
-            path = selectedNode.Tag.ToString();
-            if (File.Exists(path))
-            {
-                try
-                {
-                    // Открываем файл
-                    Process.Start(path);
-                }
-                catch { }
-            }
-            else if (Directory.Exists(path))
-            {
-                try
-                {
-                    // Получаем список файлов и папок внутри папки
-                    string[] files = Directory.GetFiles(path);
-                    string[] dirs = Directory.GetDirectories(path);
-                    label1.Text = path;
-                    // Заполняем данные для отображения в ListView
-                    listView1.Items.Clear();
-                    foreach (string dir in dirs)
-                    {
-                        DirectoryInfo di = new DirectoryInfo(dir);
-                        ListViewItem item = new ListViewItem(di.Name, 0);
-                        item.Tag = di;
-                        item.SubItems.Add("Папка");
-                        item.SubItems.Add(di.LastWriteTime.ToString());
-                        item.ImageIndex = 0; // Индекс иконки для папки
-                        listView1.Items.Add(item);
-                    }
-                    foreach (string file in files)
-                    {
-                        FileInfo fi = new FileInfo(file);
-                        ListViewItem item = new ListViewItem(fi.Name, 1);
-                        item.Tag = fi;
-                        item.SubItems.Add(fi.Extension);
-                        item.SubItems.Add(fi.LastWriteTime.ToString());
-                        //item.Tag = fi.FullName;
-                        item.ImageIndex = 1; // Индекс иконки для папки
-                        listView1.Items.Add(item);
-                    }
-                }
-                catch { }
-            }
-        }
+       
 
 
         private void listView1_ItemActivate(object sender, EventArgs e)
@@ -580,6 +412,7 @@ namespace FMg
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
+            /*
             binFormatter = new BinaryFormatter();
             Console.WriteLine("Объекты сериализуются");
             using (FileStream file = new FileStream("users.bin", FileMode.OpenOrCreate))
@@ -587,6 +420,7 @@ namespace FMg
                 binFormatter.Serialize(file, LoginForm.Users);
             }
             Application.Exit();
+            */
         }
 
 

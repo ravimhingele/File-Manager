@@ -19,27 +19,15 @@ namespace FMg
         public string FontFamily = "Arial";
         public Color BackgroundColor = Color.White;
         
+
+        public User() { }
         public User(string login, string password)
         {
             Login = login;
             Password = password;
         }
 
-        [OnSerializing]
-        internal void OnSerializing(StreamingContext context)
-        {
-            // Шифрование данных перед сериализацией
-            Login = Encrypt(Login);
-            Password = Encrypt(Password);
-        }
-
-        [OnDeserialized]
-        internal void OnDeserialized(StreamingContext context)
-        {
-            // Дешифрование данных после десериализации
-            Login = Decrypt(Login);
-            Password = Decrypt(Password);
-        }
+        
 
         private string Encrypt(string data)
         {
