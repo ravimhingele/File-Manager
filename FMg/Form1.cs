@@ -1,18 +1,9 @@
-﻿using Microsoft.VisualBasic.FileIO;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using HtmlAgilityPack;
 using System.Net;
@@ -24,7 +15,7 @@ namespace FMg
     {
         Label label1 = new Label();
 
-        ListBox listBox = new ListBox();
+        
 
         ListView listView = new ListView();
        
@@ -118,6 +109,7 @@ namespace FMg
             listView.Columns.Add(column3);
             listView.Columns.Add(column4);
             listView.Columns.Add(column5);
+            this.listView.ColumnClick += new ColumnClickEventHandler(listView_ColumnClick);
             listView.Location = new Point(1, 35);
             listView.Height = 390;
             listView.Width = 780;
@@ -130,39 +122,13 @@ namespace FMg
 
 
 
-            
-            //--ListBox--//
-            listBox.Location = new Point(3, 35);
-            listBox.Height = 390; //433
-            listBox.Width = 677;
-            listBox.Font = GlobalFont;
-            listBox.BackColor = CurrentUser.BackgroundColor;
-            //Controls.Add(listBox);
-            
-
-
-
-
-
             //---Размер окна---//
             SetSize(800, 500);
             this.Text = "Файловый менеджер"; 
             CenterToScreen();
 
-            //ShowFiles("C:\\");
-
-
-
-            listBox.MouseDoubleClick += ListBox_MouseDoubleClick;
-
 
             //--Кнопки--//
-            ReturnButton.Text = "<-";
-            SetButtonSize(ReturnButton);
-            ReturnButton.Location = new Point(5, 425);
-            ReturnButton.BackColor = Color.PeachPuff;
-            ReturnButton.Click += ReturnButton_Click;
-            Controls.Add(ReturnButton);
 
             FindButton.Text = "Найти";
             FindButton.Font = GlobalFont;
@@ -181,16 +147,6 @@ namespace FMg
             GlobalFont = new Font(fontFamily, fontSize);
             label1.Font = GlobalFont;
             comboBox.Font = GlobalFont;
-            listBox.Font = GlobalFont;
-            listBox.BackColor = backColor;
-        }
-
-
-
-        private void ListBox_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            Book currentBook = listBox.SelectedItem as Book;
-            Process.Start(currentBook.Link);
         }
 
 
@@ -203,23 +159,12 @@ namespace FMg
             }
 
         }
-        //---Функции кнопок---
+        //---Функции кнопок--
 
-        private void ReturnButton_Click(object sender, EventArgs e)
+        private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            if (Path.GetDirectoryName(path) != null)
-            {
-                path = Path.GetDirectoryName(path);
-            }
+            this.listView.ListViewItemSorter = (System.Collections.IComparer)new ListViewColumnComparer(e.Column);
         }
-
-        private void SettingsButton_Click(object sender, EventArgs e)
-        {
-            SetForm formSettings = new SetForm(listBox, this, CurrentUser);
-            formSettings.ShowDialog();
-        }
-
-
 
         private void FindButton_Click(object sender, EventArgs e)
         {
@@ -296,12 +241,6 @@ namespace FMg
                 item.Tag = book.Link;
                 listView.Items.Add(item);
             }
-            /*
-            listBox.Items.Clear();
-            foreach (Book book in books)
-            {
-                listBox.Items.Add(book);
-            }*/
         }
 
 
@@ -323,71 +262,11 @@ namespace FMg
             this.Width = width;
             this.Height = height;
         }
-        private void SetButtonSize(Button button)
-        {
-            button.Height = 35;
-            button.Width = 35;
-        }
 
         private string CreateRef(string r)
         {
             r.Replace(" ", "+");
             return r;
         }
-
-
-
-        /*
-        private void ShowFiles(string p)
-        {
-            if (File.Exists(p))
-            {
-                try
-                {
-                    Process.Start(p);
-                    path = Path.GetDirectoryName(p);
-                }
-                catch { }
-            }
-            else if (Directory.Exists(p))
-            {
-                try
-                {
-                    string[] files = Directory.GetFiles(p);
-                    string[] dirs = Directory.GetDirectories(p);
-                    label1.Text = p;
-                    listView1.Items.Clear();
-                    foreach (string dir in dirs)
-                    {
-                        DirectoryInfo di = new DirectoryInfo(dir);
-                        ListViewItem folderItem = new ListViewItem(di.Name, 0);
-                        folderItem.SubItems.Add("Папка");
-                        folderItem.SubItems.Add(di.LastWriteTime.ToString());
-                        folderItem.ImageIndex = 0;
-                        folderItem.Tag = di.FullName;
-                        listView1.Items.Add(folderItem);
-                    }
-                    foreach (string file in files)
-                    {
-                        FileInfo fi = new FileInfo(file);
-                        ListViewItem fileItem = new ListViewItem(fi.Name, 1);
-                        fileItem.SubItems.Add(fi.Extension);
-                        fileItem.SubItems.Add(fi.LastWriteTime.ToString());
-                        fileItem.Tag = fi.FullName;
-                        fileItem.ImageIndex = 1;
-                        listView1.Items.Add(fileItem);
-                    }
-                }
-                catch { }
-            }
-        }
-    */
-        
-        
-
-       
-
-        
-
     }
 }
