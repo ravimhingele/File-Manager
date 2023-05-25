@@ -29,15 +29,6 @@ namespace FMg
 
         WebClient Client;
 
-        string path;
-
-        string copiedDir;
-
-        MemoryStream copiedFile = new MemoryStream();
-        string copiedFileName;
-        string copiedFileExtension;
-
-        BinaryFormatter binFormatter;
         User CurrentUser;
 
         Font GlobalFont;
