@@ -154,7 +154,7 @@ namespace FMg
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            this.listView.ListViewItemSorter = (System.Collections.IComparer)new ListViewColumnComparer(e.Column);
+            this.listView.ListViewItemSorter = new ListViewColumnComparer(e.Column);
         }
 
         private void FindButton_Click(object sender, EventArgs e)
@@ -201,6 +201,11 @@ namespace FMg
 
                             var dateNode = node.SelectSingleNode(".//span[contains(@class, 'a-size-base a-color-secondary a-text-normal')]");
                             string date = dateNode?.InnerText.Trim();
+
+
+
+
+
 
                             // Получаем ссылку на книгу
                             var linkNode = node.SelectSingleNode(".//a[contains(@class, 'a-link-normal') and contains(@class, 's-underline-text') and contains(@class, 's-underline-link-text') and contains(@class, 's-link-style') and contains(@class, 'a-text-normal')]");
