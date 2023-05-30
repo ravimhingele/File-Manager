@@ -87,10 +87,10 @@ namespace FMg
 
 
             column1.Width = 260;
-            column2.Width = 200;
+            column2.Width = 150;
             column3.Width = 110;
             column4.Width = 100;
-            column5.Width = 100;
+            column5.Width = 150;
 
 
             // добавляем столбцы в ListView

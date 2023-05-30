@@ -25,17 +25,17 @@ namespace FMg
                 {
                     ListViewItem X = (ListViewItem)x;
                     ListViewItem Y = (ListViewItem)y;
-
-                    string[] Months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
                     string[] p1 = X.SubItems[ColumnIndex].Text.Split(' ');
                     string[] p2 = Y.SubItems[ColumnIndex].Text.Split(' ');
+                    int day1 = Convert.ToInt16(p1[1].Substring(0, p1[1].Length - 1));
+                    int day2 = Convert.ToInt16(p2[1].Substring(0, p2[1].Length - 1));
+                    string[] Months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
                     if (p1[2] == p2[2])
                     {
                         if (p1[0] == p2[0])
                         {
-                            int day1 = Convert.ToInt16(p1[1].Substring(0, p1[1].Length - 1));
-                            int day2 = Convert.ToInt16(p2[1].Substring(0, p2[1].Length - 1));
-                            return day1.CompareTo(day2);
+                            
+                            return day2.CompareTo(day1);
                         }
                         else
                         {
